@@ -90,7 +90,7 @@ void first_time_run()
 
 bool login()
 {
-	cout << "Please enter your password: ";
+	cout << "->Please enter your password: ";
 	char pw[100];
 	cin.getline(pw, sizeof pw);
 	string encodedPassword = sha256(string(pw));
@@ -119,37 +119,74 @@ void decode_file(string fn)
 
 	if (myfile.is_open())
 	{
-		while (getline(myfile, line))
+		while (getline(myfile, line) || line != "")
 		{
 			string txt = decode_rc4(line, key);
 			cout << txt << endl;
+			line = "";
 		}
 	}
 	myfile.close();
+}
+
+string askForInput()
+{
+	cout << "->Command: ";
+	char text[1000];
+	cin.getline(text, sizeof text);
+
+	string line = (string)text;
+	return line;
 }
 
 int main()
 {	
 	if (login())
 	{
-		decode_file(FN);
-
-		cout << "Login successful!" << endl;
-		cout << "What would you like to write to file?: ";
-		
-		while (true) {
-			char text[1000];
-			cin.getline(text, sizeof text);
-
-			string line = (string)text;
+		cout << "->Login successful!" << endl;
+		/*decode_file(FN);
 			string encodedText = encode_rc4(line, key);
 
 			writeStringToFile(FN, encodedText);
+		}*/
+
+		while (true) {
+			string line = askForInput();
+			if (line.compare(0, 13, "create table ") == 0)
+			{
+				string tbl_name = line.substr(13, line.length() - 1);
+				cout << "->Creating a new table: " << tbl_name << endl;
+				//create empty txt file
+				writeStringToFile(tbl_name + ".txt", "");
+			}
+
+			else if (line.compare(0, 11, "open table ") == 0)
+			{
+				string tbl_name = line.substr(11, line.length() - 1);
+				cout << "->Opening table: " << tbl_name << endl;
+				string cmd;
+				while (cmd != "exit")
+				{
+					cmd = askForInput();
+					if (cmd.compare(0, 7, "insert ") == 0)
+					{
+						string textToInsert = cmd.substr(7, cmd.length() - 1);
+						textToInsert = encode_rc4(textToInsert, key);
+						writeStringToFile(tbl_name + ".txt", textToInsert);
+					}
+
+					else if (cmd == "decode")
+					{
+						decode_file(tbl_name + ".txt");
+					}
+				}
+				cout << "->Exited." << endl;
+			}
 		}
 		
 	} else
 	{
-		cout << "Login unsuccessful!" << endl;
+		cout << "->Login unsuccessful!" << endl;
 	}
 	getchar();
     return 0;
