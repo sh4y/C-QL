@@ -4,7 +4,7 @@
 #include <iomanip>
 #include <sstream>
 
-#include "cryptography.h";
+#include "cryptography.h"
 
 using namespace std;
 

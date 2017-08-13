@@ -2,11 +2,12 @@
 //
 
 #include "stdafx.h"
-#include "Cryptography.h";
+#include "Cryptography.h"
 #include <sstream>
 #include <iomanip>
 #include <fstream>
 #include <iostream>
+#include "fmanip.h"
 
 
 using namespace std;
@@ -15,20 +16,6 @@ string FN = "db.txt";
 string KEY_FILE = "pw.txt";
 string encodedPasskey;
 const unsigned char * key;
-
-void writeStringToFile(string fn, string text)
-{
-	ofstream openFile;
-	openFile.open(fn, fstream::app);
-	if (openFile.is_open())
-	{
-		openFile << text << endl;
-		openFile.close();
-	}
-
-	else cout << "Couldn't open the file" << endl;
-
-}
 
 void first_time_run()
 {
@@ -61,33 +48,6 @@ bool login()
 		}
 	}
 	return false;
-}
-
-void decode_file(string fn)
-{
-	ifstream myfile(fn);
-	string line;
-
-	if (myfile.is_open())
-	{
-		while (getline(myfile, line) || line != "")
-		{
-			string txt = decode_rc4(line, key);
-			cout << txt << endl;
-			line = "";
-		}
-	}
-	myfile.close();
-}
-
-string askForInput()
-{
-	cout << "->Command: ";
-	char text[1000];
-	cin.getline(text, sizeof text);
-
-	string line = (string)text;
-	return line;
 }
 
 int main()
@@ -128,7 +88,7 @@ int main()
 
 					else if (cmd == "decode")
 					{
-						decode_file(tbl_name + ".txt");
+						decode_file(tbl_name + ".txt", key);
 					}
 				}
 				cout << "->Exited." << endl;
