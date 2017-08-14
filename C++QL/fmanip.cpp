@@ -7,7 +7,7 @@
 void writeStringToFile(string fn, string text)
 {
 	ofstream openFile;
-	openFile.open(fn, fstream::app);
+	openFile.open("Stocks/" + fn, fstream::app);
 	if (openFile.is_open())
 	{
 		openFile << text << endl;
@@ -15,12 +15,11 @@ void writeStringToFile(string fn, string text)
 	}
 
 	else cout << "Couldn't open the file" << endl;
-
 }
 
 void decode_file(string fn, unsigned const char * key)
 {
-	ifstream myfile(fn);
+	ifstream myfile("Stocks/" + fn);
 	string line;
 
 	if (myfile.is_open())

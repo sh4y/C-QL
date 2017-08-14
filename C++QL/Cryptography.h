@@ -1,4 +1,4 @@
-#include <string>
+#pragma once
 using namespace std;
 
 string sha256(const std::string str);
